@@ -1,27 +1,24 @@
 spring:
-  main.banner-mode: OFF
-  jpa:
-    hibernate:
-      ddl-auto: update
-      format_sql: true
-      jdbc.time_zone: UTC
-  sql:
-    init:
-      mode: always
+  application:
+    name: stats-server
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-server
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
 
-  datasource:
-    driverClassName: "org.postgresql.Driver"
-    url: "jdbc:postgresql://localhost:6542/ewm-stats"
-    username: "stat"
-    password: "stat"
-
-logging:
-  level:
-    org.springframework:
-      orm.jpa: WARN
-      orm.jpa.JpaTransactionManager: WARN
-      transaction: WARN
-      transaction.interceptor: WARN
-
-server:
-  port: 9090
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    leaseRenewalIntervalInSeconds: 10
